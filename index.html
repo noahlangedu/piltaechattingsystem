@@ -1,0 +1,757 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090b12">
+<title>PILTAE CHAT</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+:root {
+  color-scheme: dark;
+  --bg:#090b12; --panel:#10131e; --panel2:#151927;
+  --border:#262b3b; --text:#f1f3ff; --muted:#929bb3;
+  --accent:#8b5cf6; --accent2:#6d5dfc; --green:#48dfaa;
+  --danger:#ff647c;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+button,input{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
+input{color:var(--text)}
+.hidden{display:none!important}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button:focus:not(:focus-visible){outline:none}
+#authView{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(ellipse at 20% 15%,#34245e55,transparent 45%),radial-gradient(ellipse at 85% 85%,#1d4d6050,transparent 42%),var(--bg)}
+.auth-card{width:min(440px,100%);padding:32px;border:1px solid var(--border);border-radius:22px;background:#10131eeb;box-shadow:0 25px 90px #0007}
+.brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:2px;font-size:22px}
+.logo{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:linear-gradient(135deg,#a78bfa,#5b4ae8);color:white;font-size:20px;box-shadow:0 5px 24px #8055ff44}
+.auth-card h1{font-size:25px;margin:28px 0 4px}
+.auth-card p{margin-top:4px}
+.field{margin-top:17px}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:7px}
+.field input,.search-input,.profile-input{width:100%;padding:12px 13px;background:#090c14;border:1px solid var(--border);border-radius:10px;outline:none}
+.field input:focus,.search-input:focus,.profile-input:focus{border-color:var(--accent)}
+.primary{background:linear-gradient(135deg,#9a70ff,#6c5ce7);border:0;color:white;font-weight:750;border-radius:10px;padding:12px 16px}
+.primary:hover{filter:brightness(1.1)}
+.secondary{background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 12px}
+.text-btn{border:0;background:none;color:#b7a5ff;padding:5px}
+.auth-submit{width:100%;margin-top:22px}
+#authMessage,#appNotice{margin-top:14px;white-space:pre-wrap;font-size:13px}
+.error{color:var(--danger)} .success{color:var(--green)}
+.auth-links{display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:8px;flex-wrap:wrap}
+#appView{height:100dvh;min-height:540px;display:grid;grid-template-columns:250px minmax(0,1fr);overflow:hidden}
+.sidebar{display:flex;flex-direction:column;background:#0d1019;border-right:1px solid var(--border);padding:22px 14px;min-height:0}
+.sidebar .brand{padding:0 8px 24px;font-size:18px;letter-spacing:1.5px}
+.workspace{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:24px}
+.workspace strong{display:block;font-size:13px}
+.workspace span{font-size:11px;color:var(--muted)}
+.nav-label{font-size:10px;letter-spacing:1.7px;font-weight:800;color:#69738b;padding:0 10px 9px}
+.channel{display:flex;align-items:center;gap:9px;width:100%;padding:10px;border:0;border-radius:9px;background:transparent;color:#aeb6cb;text-align:left;margin-bottom:4px}
+.channel:hover{background:#ffffff0b;color:white}
+.channel.active{background:#7655ec24;color:#c7b7ff;box-shadow:inset 2px 0 #9b7aff}
+.channel .hash{font-size:19px;opacity:.7}
+.sidebar-bottom{margin-top:auto}
+.connection{display:flex;align-items:center;gap:8px;padding:12px 9px;color:var(--muted);font-size:12px}
+.dot{width:8px;height:8px;background:#626b80;border-radius:50%;display:inline-block}
+.dot.online{background:var(--green);box-shadow:0 0 10px #48dfaa66}
+.account{display:flex;align-items:center;gap:10px;padding:12px 8px;border-top:1px solid var(--border)}
+.avatar{width:36px;height:36px;flex-shrink:0;border-radius:12px;background:linear-gradient(135deg,#8b5cf6,#20b7bb);display:grid;place-items:center;font-weight:850;color:white}
+.account-info{min-width:0;flex:1}
+.account-info strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
+.account-info span{display:block;color:var(--muted);font-size:11px}
+.icon-btn{background:transparent;color:var(--muted);border:1px solid transparent;border-radius:9px;padding:8px}
+.icon-btn:hover{background:#ffffff0b;color:white}
+.main{display:flex;flex-direction:column;min-width:0;min-height:0}
+.topbar{height:76px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 25px;border-bottom:1px solid var(--border);background:#0d1019d9}
+.channel-heading{display:flex;align-items:center;gap:10px;min-width:0}
+.channel-heading h2{font-size:17px;margin:0}
+.channel-heading p{font-size:11px;color:var(--muted);margin:1px 0 0}
+.top-actions{display:flex;align-items:center;gap:8px}
+.search-input{width:min(220px,26vw);padding:9px 11px;font-size:12px}
+#mobileMenu{display:none}
+.messages{flex:1;overflow-y:auto;padding:24px max(20px,calc((100% - 900px)/2));scroll-behavior:smooth}
+.welcome{padding:22px;border:1px solid var(--border);border-radius:16px;background:linear-gradient(120deg,#19152b,#111923);margin-bottom:22px}
+.welcome .eyebrow{color:#bba6ff;font-size:10px;font-weight:850;letter-spacing:2px}
+.welcome h2{font-size:21px;margin:6px 0}
+.welcome p{color:var(--muted);margin:0}
+.date-divider{text-align:center;margin:22px 0;color:#707a91;font-size:11px}
+.message{display:flex;gap:12px;margin:0 0 22px;align-items:flex-start}
+.message .avatar{width:38px;height:38px;border-radius:12px}
+.message-body{min-width:0;flex:1}
+.message-meta{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.message-meta strong{font-size:13px}
+.message-meta time{font-size:10px;color:#717c93}
+.message-content{color:#d7dced;margin-top:4px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65}
+.empty{padding:55px 15px;text-align:center;color:var(--muted)}
+.composer-wrap{padding:12px 22px 18px;border-top:1px solid var(--border);background:#0d1019}
+.composer{max-width:900px;margin:auto;border:1px solid #34384d;background:#141824;border-radius:14px;padding:10px 12px;display:flex;align-items:flex-end;gap:10px}
+.composer textarea{flex:1;min-width:0;max-height:140px;resize:vertical;background:transparent;color:var(--text);border:0;outline:0;padding:7px 0;font:inherit;line-height:1.5}
+.composer textarea::placeholder{color:#727d95}
+.composer-tools{display:flex;align-items:center;gap:4px}
+.composer-tools button{border:0;background:transparent;color:#a4adc2;border-radius:8px;padding:8px}
+.composer-tools button:hover{background:#ffffff10;color:white}
+.send-btn{background:var(--accent2)!important;color:white!important;font-weight:800;padding:9px 13px!important}
+.hint{max-width:900px;margin:7px auto 0;color:#737d93;font-size:10px}
+.overlay{position:fixed;inset:0;background:#0009;display:grid;place-items:center;padding:18px;z-index:5}
+.modal{width:min(440px,100%);background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:24px;box-shadow:0 25px 80px #0008}
+.modal-header{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.modal h2{margin:0;font-size:19px}
+.modal .field{margin-top:16px}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:22px}
+#emojiTray{position:absolute;bottom:90px;right:35px;padding:10px;border:1px solid var(--border);background:var(--panel2);border-radius:12px;display:grid;grid-template-columns:repeat(6,1fr);gap:5px;box-shadow:0 8px 30px #0007}
+#emojiTray button{border:0;background:transparent;border-radius:6px;padding:5px;font-size:20px}
+#emojiTray button:hover{background:#ffffff15}
+@media(max-width:760px){
+ #appView{grid-template-columns:minmax(0,1fr)}
+ .sidebar{position:fixed;z-index:4;top:0;bottom:0;left:0;width:260px;transform:translateX(-105%);transition:transform .2s;box-shadow:15px 0 45px #0005}
+ .sidebar.open{transform:translateX(0)}
+ #mobileMenu{display:inline-block}
+ .topbar{height:68px;padding:0 13px}
+ .search-input{width:125px}
+ .messages{padding:18px 14px}
+ .composer-wrap{padding:10px 10px 14px}
+ .welcome{padding:17px}
+ .auth-card{padding:25px}
+}
+@media(max-width:390px){.search-input{width:95px}.top-actions{gap:2px}.channel-heading p{display:none}}
+</style>
+</head>
+<body>
+
+<section id="authView">
+  <div class="auth-card">
+    <div class="brand"><div class="logo">P</div><span>PILTAE CHAT</span></div>
+    <h1 id="authTitle">Welcome back.</h1>
+    <p id="authSubtitle" class="muted">Your people. Your channels. Your space.</p>
+
+    <form id="authForm">
+      <div class="field hidden" id="nameField">
+        <label for="displayName">DISPLAY NAME</label>
+        <input id="displayName" maxlength="40" autocomplete="nickname" placeholder="What should we call you?">
+      </div>
+      <div class="field">
+        <label for="email">EMAIL ADDRESS</label>
+        <input id="email" type="email" required autocomplete="email" placeholder="you@example.com">
+      </div>
+      <div class="field" id="passwordField">
+        <label for="password">PASSWORD</label>
+        <input id="password" type="password" required minlength="6" autocomplete="current-password" placeholder="At least 6 characters">
+      </div>
+      <button id="authSubmit" class="primary auth-submit" type="submit">Sign in</button>
+    </form>
+
+    <div class="auth-links">
+      <button id="switchAuth" class="text-btn" type="button">Create an account</button>
+      <button id="forgotBtn" class="text-btn" type="button">Forgot password?</button>
+    </div>
+    <div id="authMessage" role="status"></div>
+    <p class="muted small" style="margin-top:22px">A community built around the conversation.</p>
+  </div>
+</section>
+
+<section id="appView" class="hidden">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><div class="logo">P</div><span>PILTAE CHAT</span></div>
+    <div class="workspace"><strong>✦ PILTAE COMMUNITY</strong><span>YOUR DIGITAL HANGOUT</span></div>
+    <div class="nav-label">TEXT CHANNELS</div>
+    <button class="channel active" data-channel="general"><span class="hash">#</span> general</button>
+    <button class="channel" data-channel="gaming"><span class="hash">#</span> gaming</button>
+    <button class="channel" data-channel="tech"><span class="hash">#</span> tech</button>
+    <button class="channel" data-channel="random"><span class="hash">#</span> random</button>
+    <div class="sidebar-bottom">
+      <div class="connection"><span class="dot" id="connectionDot"></span><span id="connectionText">Connecting…</span></div>
+      <div class="account">
+        <div class="avatar" id="accountAvatar">P</div>
+        <div class="account-info"><strong id="accountName">Loading…</strong><span id="accountTag">@user</span></div>
+        <button class="icon-btn" id="profileBtn" title="Profile settings" aria-label="Profile settings">⚙</button>
+        <button class="icon-btn" id="signOutBtn" title="Sign out" aria-label="Sign out">↪</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="channel-heading">
+        <button id="mobileMenu" class="icon-btn" aria-label="Open channels">☰</button>
+        <div><h2 id="channelTitle"># general</h2><p id="channelDescription">The place to start a conversation.</p></div>
+      </div>
+      <div class="top-actions">
+        <input class="search-input" id="searchInput" type="search" placeholder="⌕ Search messages…" aria-label="Search messages">
+        <button class="icon-btn" id="refreshBtn" title="Reload messages" aria-label="Reload messages">↻</button>
+      </div>
+    </header>
+
+    <div id="appNotice" class="hidden" role="status" style="padding:8px 22px"></div>
+    <section class="messages" id="messages" aria-live="polite">
+      <div class="welcome">
+        <div class="eyebrow">WELCOME TO PILTAE CHAT</div>
+        <h2>Make yourself at home.</h2>
+        <p>Say hello, meet the community, and find your people.</p>
+      </div>
+      <div class="empty">Loading messages…</div>
+    </section>
+
+    <footer class="composer-wrap">
+      <form class="composer" id="messageForm">
+        <textarea id="messageInput" rows="1" maxlength="2000" placeholder="Message #general" aria-label="Write a message" required></textarea>
+        <div class="composer-tools">
+          <button type="button" id="emojiBtn" title="Add emoji" aria-label="Add emoji">☺</button>
+          <button type="submit" id="sendBtn" class="send-btn" aria-label="Send message">➤</button>
+        </div>
+      </form>
+      <div class="hint">Enter to send · Shift + Enter for a new line · Be kind to each other.</div>
+    </footer>
+  </main>
+</section>
+
+<div id="profileOverlay" class="overlay hidden">
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
+    <div class="modal-header"><h2 id="profileTitle">Your profile</h2><button class="icon-btn" id="closeProfile" aria-label="Close">✕</button></div>
+    <p class="muted small">Personalize how other people see you.</p>
+    <form id="profileForm">
+      <div class="field"><label for="profileDisplayName">DISPLAY NAME</label><input class="profile-input" id="profileDisplayName" maxlength="40" required></div>
+      <div class="field"><label for="profileUsername">USERNAME (3–24 CHARACTERS)</label><input class="profile-input" id="profileUsername" minlength="3" maxlength="24" pattern="[A-Za-z0-9_]+" required><p class="muted small">Use letters, numbers, and underscores only.</p></div>
+      <div id="profileMessage" role="status"></div>
+      <div class="modal-actions"><button type="button" class="secondary" id="cancelProfile">Cancel</button><button type="submit" class="primary" id="saveProfile">Save changes</button></div>
+    </form>
+  </section>
+</div>
+
+<div id="emojiTray" class="hidden" aria-label="Choose emoji">
+  <button type="button">😀</button><button type="button">😂</button><button type="button">💀</button><button type="button">🔥</button><button type="button">❤️</button><button type="button">😭</button>
+  <button type="button">👀</button><button type="button">✨</button><button type="button">👍</button><button type="button">🎮</button><button type="button">💻</button><button type="button">🚀</button>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  const SUPABASE_URL = "https://djqrdmwwnkrcbnchwtpe.supabase.co";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_YiYZ36-XRYFd5syczEztCg__Q5impux";
+  const SITE_URL = "https://noahlangedu.github.io/piltaechat88222/";
+
+  const $ = id => document.getElementById(id);
+  const authView = $("authView");
+  const appView = $("appView");
+  const authForm = $("authForm");
+  const authMessage = $("authMessage");
+  const appNotice = $("appNotice");
+  const messagesEl = $("messages");
+  const messageInput = $("messageInput");
+  const searchInput = $("searchInput");
+
+  const channelInfo = {
+    general: "The place to start a conversation.",
+    gaming: "Games, teammates, and everything gaming.",
+    tech: "Computers, coding, and cool technology.",
+    random: "Anything that doesn't fit elsewhere."
+  };
+
+  let supabaseClient;
+  let currentUser = null;
+  let currentProfile = null;
+  let currentChannel = "general";
+  let messageRows = [];
+  let messageSubscription = null;
+  let authMode = "signin";
+  let loadingMessages = false;
+
+  function showMessage(el, text, type = "") {
+    el.textContent = text || "";
+    el.className = type;
+  }
+
+  function setConnection(connected, text) {
+    $("connectionDot").classList.toggle("online", connected);
+    $("connectionText").textContent = text;
+  }
+
+  function showAuth(message = "", type = "") {
+    authView.classList.remove("hidden");
+    appView.classList.add("hidden");
+    showMessage(authMessage, message, type);
+  }
+
+  function showApp() {
+    authView.classList.add("hidden");
+    appView.classList.remove("hidden");
+  }
+
+  function escapeText(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;",
+      '"': "&quot;", "'": "&#39;"
+    })[char]);
+  }
+
+  function initials(name) {
+    const value = String(name || "?").trim();
+    return value ? Array.from(value)[0].toUpperCase() : "?";
+  }
+
+  function formatTime(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+    return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  }
+
+  function formatDate(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+    return date.toLocaleDateString([], { month: "long", day: "numeric", year: "numeric" });
+  }
+
+  function notice(text, type = "") {
+    showMessage(appNotice, text, type);
+    appNotice.classList.toggle("hidden", !text);
+  }
+
+  function updateAccount() {
+    const name = currentProfile?.display_name || currentProfile?.username || "User";
+    $("accountName").textContent = name;
+    $("accountTag").textContent = "@" + (currentProfile?.username || "user");
+    $("accountAvatar").textContent = initials(name);
+  }
+
+  function setAuthMode(mode) {
+    authMode = mode;
+    const signup = mode === "signup";
+    const reset = mode === "reset";
+    $("authTitle").textContent = signup ? "Join the community." : reset ? "Reset your password." : "Welcome back.";
+    $("authSubtitle").textContent = signup
+      ? "Create your account and find your people."
+      : reset ? "We'll email you a password reset link."
+      : "Your people. Your channels. Your space.";
+    $("nameField").classList.toggle("hidden", !signup);
+    $("passwordField").classList.toggle("hidden", reset);
+    $("password").required = !reset;
+    $("authSubmit").textContent = signup ? "Create account" : reset ? "Send reset link" : "Sign in";
+    $("switchAuth").textContent = signup ? "Already have an account? Sign in" : "Create an account";
+    $("forgotBtn").classList.toggle("hidden", signup || reset);
+    showMessage(authMessage, "");
+  }
+
+  async function getProfile(user) {
+    let { data, error } = await supabaseClient
+      .from("profiles")
+      .select("id,username,display_name,role,is_banned")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    // Normally the database trigger creates this row during registration.
+    // Retry briefly in case the trigger result is not yet visible.
+    if (!data) {
+      for (let i = 0; i < 3 && !data; i++) {
+        await new Promise(resolve => setTimeout(resolve, 350));
+        const retry = await supabaseClient.from("profiles")
+          .select("id,username,display_name,role,is_banned")
+          .eq("id", user.id).maybeSingle();
+        if (retry.error) throw retry.error;
+        data = retry.data;
+      }
+    }
+
+    if (!data) throw new Error("Your profile was not created. Run the Supabase setup SQL and try signing out and back in.");
+    if (data.is_banned) {
+      await supabaseClient.auth.signOut();
+      throw new Error("This account has been disabled. Contact the site administrator.");
+    }
+    return data;
+  }
+
+  async function enterApp(user) {
+    currentUser = user;
+    showMessage(authMessage, "");
+    try {
+      currentProfile = await getProfile(user);
+      updateAccount();
+      showApp();
+      await loadMessages();
+      subscribeToMessages();
+    } catch (error) {
+      console.error(error);
+      showAuth(error.message || "Unable to load your profile.");
+    }
+  }
+
+  function unsubscribeMessages() {
+    if (messageSubscription) {
+      supabaseClient.removeChannel(messageSubscription);
+      messageSubscription = null;
+    }
+  }
+
+  function subscribeToMessages() {
+    unsubscribeMessages();
+    setConnection(true, "Connected");
+    messageSubscription = supabaseClient.channel("piltae-messages-" + currentChannel)
+      .on("postgres_changes", {
+        event: "*", schema: "public", table: "messages",
+        filter: "channel=eq." + currentChannel
+      }, payload => {
+        if (payload.eventType === "INSERT") {
+          if (!messageRows.some(row => row.id === payload.new.id)) {
+            messageRows.push(payload.new);
+            messageRows.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+            renderMessages();
+          }
+        } else if (payload.eventType === "DELETE") {
+          messageRows = messageRows.filter(row => row.id !== payload.old.id);
+          renderMessages();
+        }
+      })
+      .subscribe(status => {
+        if (status === "SUBSCRIBED") setConnection(true, "Live connection");
+        else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+          setConnection(false, "Reconnecting…");
+        }
+      });
+  }
+
+  async function loadMessages() {
+    if (!currentUser || loadingMessages) return;
+    loadingMessages = true;
+    const oldScrollBottom = messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight < 100;
+    try {
+      const { data, error } = await supabaseClient
+        .from("messages")
+        .select("id,user_id,username,content,channel,created_at")
+        .eq("channel", currentChannel)
+        .order("created_at", { ascending: true })
+        .limit(300);
+
+      if (error) throw error;
+      messageRows = data || [];
+      renderMessages(oldScrollBottom);
+      setConnection(true, "Connected");
+      notice("");
+    } catch (error) {
+      console.error(error);
+      notice("Couldn't load messages: " + error.message + " — check your Supabase SQL and RLS policies.", "error");
+      messagesEl.innerHTML = '<div class="empty">Messages could not be loaded.<br>Check the connection notice above.</div>';
+    } finally {
+      loadingMessages = false;
+    }
+  }
+
+  function renderMessages(keepBottom = true) {
+    const query = searchInput.value.trim().toLowerCase();
+    const filtered = messageRows.filter(row =>
+      !query || row.content.toLowerCase().includes(query) ||
+      row.username.toLowerCase().includes(query)
+    );
+
+    const oldDistance = messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight;
+    const intro = `
+      <div class="welcome">
+        <div class="eyebrow">PILTAE CHAT / COMMUNITY</div>
+        <h2>Welcome to #${escapeText(currentChannel)}.</h2>
+        <p>${escapeText(channelInfo[currentChannel])} Be the first to start a conversation.</p>
+      </div>`;
+
+    if (!filtered.length) {
+      messagesEl.innerHTML = intro + `<div class="empty">${query ? "No messages match your search." : "It's quiet in here. Send the first message!"}</div>`;
+      return;
+    }
+
+    let previousDate = "";
+    let html = intro;
+    for (const row of filtered) {
+      const dateLabel = formatDate(row.created_at);
+      if (dateLabel !== previousDate) {
+        html += `<div class="date-divider">${escapeText(dateLabel)}</div>`;
+        previousDate = dateLabel;
+      }
+      const displayName = row.username || "User";
+      html += `
+        <article class="message">
+          <div class="avatar">${escapeText(initials(displayName))}</div>
+          <div class="message-body">
+            <div class="message-meta">
+              <strong>${escapeText(displayName)}</strong>
+              <time datetime="${escapeText(row.created_at)}">${escapeText(formatTime(row.created_at))}</time>
+            </div>
+            <div class="message-content">${escapeText(row.content)}</div>
+          </div>
+        </article>`;
+    }
+    messagesEl.innerHTML = html;
+    if (keepBottom || oldDistance < 100) messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  async function sendMessage(event) {
+    event.preventDefault();
+    if (!currentUser || !currentProfile) return;
+    const content = messageInput.value.trim();
+    if (!content) return;
+    if (content.length > 2000) {
+      notice("Messages must be 2,000 characters or fewer.", "error");
+      return;
+    }
+
+    $("sendBtn").disabled = true;
+    try {
+      const { data, error } = await supabaseClient.from("messages").insert({
+        user_id: currentUser.id,
+        username: currentProfile.username,
+        content,
+        channel: currentChannel
+      }).select("id,user_id,username,content,channel,created_at").single();
+
+      if (error) throw error;
+      if (data && !messageRows.some(row => row.id === data.id)) {
+        messageRows.push(data);
+        messageRows.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+        renderMessages();
+      }
+      messageInput.value = "";
+      messageInput.style.height = "auto";
+      notice("");
+    } catch (error) {
+      console.error(error);
+      notice("Message not sent: " + error.message, "error");
+    } finally {
+      $("sendBtn").disabled = false;
+      messageInput.focus();
+    }
+  }
+
+  async function changeChannel(channel) {
+    if (!channelInfo[channel] || channel === currentChannel) {
+      $("sidebar").classList.remove("open");
+      return;
+    }
+    currentChannel = channel;
+    $("channelTitle").textContent = "# " + channel;
+    $("channelDescription").textContent = channelInfo[channel];
+    messageInput.placeholder = "Message #" + channel;
+    document.querySelectorAll(".channel").forEach(button => {
+      button.classList.toggle("active", button.dataset.channel === channel);
+    });
+    $("sidebar").classList.remove("open");
+    messageRows = [];
+    messagesEl.innerHTML = '<div class="empty">Loading messages…</div>';
+    await loadMessages();
+    subscribeToMessages();
+  }
+
+  async function handleAuth(event) {
+    event.preventDefault();
+    const email = $("email").value.trim();
+    const password = $("password").value;
+    const displayName = $("displayName").value.trim();
+
+    $("authSubmit").disabled = true;
+    showMessage(authMessage, authMode === "signin" ? "Signing in…" : authMode === "signup" ? "Creating your account…" : "Sending reset link…");
+
+    try {
+      if (authMode === "signup") {
+        if (displayName.length < 2) throw new Error("Enter a display name with at least 2 characters.");
+        const { data, error } = await supabaseClient.auth.signUp({
+          email, password,
+          options: {
+            data: { display_name: displayName },
+            emailRedirectTo: SITE_URL
+          }
+        });
+        if (error) throw error;
+        if (data.session) {
+          await enterApp(data.user);
+        } else {
+          setAuthMode("signin");
+          showMessage(authMessage, "Account created! Check your email for the confirmation link, then return here and sign in.", "success");
+        }
+      } else if (authMode === "reset") {
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+          redirectTo: SITE_URL
+        });
+        if (error) throw error;
+        showMessage(authMessage, "If an account exists for that email, a password reset link will arrive shortly. Check your inbox and spam folder.", "success");
+      } else {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        await enterApp(data.user);
+      }
+    } catch (error) {
+      console.error(error);
+      showMessage(authMessage, error.message || "Something went wrong. Please try again.", "error");
+    } finally {
+      $("authSubmit").disabled = false;
+    }
+  }
+
+  async function saveProfile(event) {
+    event.preventDefault();
+    if (!currentUser || !currentProfile) return;
+
+    const display_name = $("profileDisplayName").value.trim();
+    const username = $("profileUsername").value.trim();
+    if (display_name.length < 2) {
+      showMessage($("profileMessage"), "Display name must contain at least 2 characters.", "error");
+      return;
+    }
+    if (!/^[A-Za-z0-9_]{3,24}$/.test(username)) {
+      showMessage($("profileMessage"), "Username must be 3–24 letters, numbers, or underscores.", "error");
+      return;
+    }
+
+    $("saveProfile").disabled = true;
+    showMessage($("profileMessage"), "Saving…");
+    try {
+      const { data, error } = await supabaseClient.from("profiles")
+        .update({ display_name, username, updated_at: new Date().toISOString() })
+        .eq("id", currentUser.id)
+        .select("id,username,display_name,role,is_banned")
+        .single();
+
+      if (error) throw error;
+      currentProfile = data;
+      updateAccount();
+      $("profileOverlay").classList.add("hidden");
+      notice("Profile updated.", "success");
+      await loadMessages();
+    } catch (error) {
+      console.error(error);
+      showMessage($("profileMessage"),
+        error.code === "23505" ? "That username is already taken." : error.message || "Could not save your profile.",
+        "error");
+    } finally {
+      $("saveProfile").disabled = false;
+    }
+  }
+
+  async function signOut() {
+    unsubscribeMessages();
+    const { error } = await supabaseClient.auth.signOut();
+    if (error) console.error(error);
+    currentUser = null;
+    currentProfile = null;
+    messageRows = [];
+    showAuth("You have signed out.", "success");
+    setAuthMode("signin");
+  }
+
+  function openProfile() {
+    if (!currentProfile) return;
+    $("profileDisplayName").value = currentProfile.display_name || "";
+    $("profileUsername").value = currentProfile.username || "";
+    showMessage($("profileMessage"), "");
+    $("profileOverlay").classList.remove("hidden");
+    $("profileDisplayName").focus();
+  }
+
+  function boot() {
+    if (!window.supabase || !window.supabase.createClient) {
+      showAuth("The Supabase library failed to load. Check your internet connection or browser tracking protection, then reload the page.");
+      return;
+    }
+
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    });
+
+    authForm.addEventListener("submit", handleAuth);
+    $("switchAuth").addEventListener("click", () => {
+      setAuthMode(authMode === "signup" ? "signin" : "signup");
+    });
+    $("forgotBtn").addEventListener("click", () => setAuthMode("reset"));
+    $("messageForm").addEventListener("submit", sendMessage);
+    $("profileBtn").addEventListener("click", openProfile);
+    $("closeProfile").addEventListener("click", () => $("profileOverlay").classList.add("hidden"));
+    $("cancelProfile").addEventListener("click", () => $("profileOverlay").classList.add("hidden"));
+    $("profileForm").addEventListener("submit", saveProfile);
+    $("signOutBtn").addEventListener("click", signOut);
+    $("refreshBtn").addEventListener("click", loadMessages);
+    $("mobileMenu").addEventListener("click", () => $("sidebar").classList.toggle("open"));
+
+    document.querySelectorAll(".channel").forEach(button => {
+      button.addEventListener("click", () => changeChannel(button.dataset.channel));
+    });
+
+    searchInput.addEventListener("input", () => renderMessages(false));
+    messageInput.addEventListener("input", () => {
+      messageInput.style.height = "auto";
+      messageInput.style.height = Math.min(messageInput.scrollHeight, 140) + "px";
+    });
+    messageInput.addEventListener("keydown", event => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        $("messageForm").requestSubmit();
+      }
+    });
+
+    $("emojiBtn").addEventListener("click", () => $("emojiTray").classList.toggle("hidden"));
+    $("emojiTray").querySelectorAll("button").forEach(button => {
+      button.addEventListener("click", () => {
+        const start = messageInput.selectionStart;
+        const end = messageInput.selectionEnd;
+        const value = messageInput.value;
+        messageInput.value = value.slice(0, start) + button.textContent + value.slice(end);
+        messageInput.focus();
+        const position = start + button.textContent.length;
+        messageInput.setSelectionRange(position, position);
+        $("emojiTray").classList.add("hidden");
+      });
+    });
+
+    document.addEventListener("click", event => {
+      if (!event.target.closest("#emojiTray") && !event.target.closest("#emojiBtn")) {
+        $("emojiTray").classList.add("hidden");
+      }
+      if (!event.target.closest("#sidebar") && !event.target.closest("#mobileMenu")) {
+        $("sidebar").classList.remove("open");
+      }
+    });
+
+    $("profileOverlay").addEventListener("click", event => {
+      if (event.target === $("profileOverlay")) $("profileOverlay").classList.add("hidden");
+    });
+
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (event === "PASSWORD_RECOVERY") {
+        const newPassword = prompt("Enter your new password (at least 6 characters):");
+        if (newPassword && newPassword.length >= 6) {
+          supabaseClient.auth.updateUser({ password: newPassword })
+            .then(({ error }) => {
+              if (error) alert("Password update failed: " + error.message);
+              else alert("Password updated. You can now sign in with your new password.");
+            });
+        } else if (newPassword !== null) {
+          alert("Password must be at least 6 characters. Request a new reset link to try again.");
+        }
+      }
+      if (event === "SIGNED_OUT") {
+        unsubscribeMessages();
+      }
+    });
+
+    supabaseClient.auth.getSession().then(({ data, error }) => {
+      if (error) {
+        showAuth("Could not check your session: " + error.message, "error");
+        return;
+      }
+      if (data.session) enterApp(data.session.user);
+      else showAuth();
+    }).catch(error => {
+      console.error(error);
+      showAuth("Could not connect to Supabase: " + error.message, "error");
+    });
+  }
+
+  setAuthMode("signin");
+  boot();
+})();
+</script>
+</body>
+</html>
