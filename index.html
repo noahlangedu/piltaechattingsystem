@@ -1,401 +1,1947 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>🎃 PILTAE CHAT</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PILTAE CHAT</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-:root{--bg:#0b0810;--panel:#15101d;--panel2:#21162c;--line:#3c2949;--orange:#ff7918;--purple:#a855f7;--text:#f8efff;--muted:#b9a8c8;--red:#ff536b}
+:root{
+    --bg:#07070b;
+    --panel:#0e0e15;
+    --panel2:#141420;
+    --panel3:#1b1b29;
+    --text:#f4f1ff;
+    --muted:#858399;
+    --purple:#9b5cff;
+    --purple2:#6d35d9;
+    --orange:#ff7a18;
+    --green:#43e58c;
+    --red:#ff4f68;
+    --border:#29283a;
+}
+
 *{box-sizing:border-box}
-body{margin:0;background:radial-gradient(ellipse at top,#35143d,#0b0810 65%);color:var(--text);font:15px system-ui,sans-serif}
-button,input,textarea,select{font:inherit}
-button{border:1px solid #7c3e20;border-radius:10px;background:linear-gradient(120deg,#ff7918,#b93c15);color:white;padding:10px 14px;font-weight:700;cursor:pointer}
-button:disabled{opacity:.5}
-.secondary{background:#21172d;border-color:#543964}
-input,textarea,select{background:#0c0911;color:white;border:1px solid var(--line);border-radius:9px;padding:11px;width:100%}
-label{display:block;color:var(--muted);margin:12px 0 5px}
-.hidden{display:none!important}
-.muted,.tiny{color:var(--muted)}
-.tiny{font-size:12px}
-.brand{font-size:23px;font-weight:950;letter-spacing:1px}
-.brand span{color:var(--orange)}
-.panel{background:#15101df2;border:1px solid var(--line);border-radius:16px;padding:22px}
-#auth{max-width:440px;margin:7vh auto}
-#auth h1{margin-bottom:4px}
-.tabs{display:flex;gap:8px;margin:18px 0}
-.tabs button{flex:1}
-#app{height:100dvh;min-height:540px;display:grid;grid-template-columns:245px minmax(0,1fr)}
-aside{background:#0d0913;border-right:1px solid var(--line);padding:15px;display:flex;flex-direction:column;gap:10px;min-height:0}
-.side-scroll{overflow:auto;flex:1;min-height:0}
-.section{font-size:11px;letter-spacing:1.5px;color:#a58bb7;margin:18px 7px 7px;font-weight:800}
-.nav{display:block;text-align:left;width:100%;background:transparent;border:1px solid transparent;color:#e1d1ed;margin:3px 0;padding:10px}
-.nav:hover,.nav.active{background:#291832;border-color:#623a65;border-left:3px solid var(--orange)}
-.profile{display:flex;align-items:center;gap:9px;overflow:hidden}
-.avatar{width:35px;height:35px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;background:linear-gradient(140deg,#ff7918,#8525bb);font-weight:900}
-.main{display:flex;flex-direction:column;min-width:0;min-height:0}
-header{height:68px;flex-shrink:0;display:flex;justify-content:space-between;align-items:center;padding:0 18px;border-bottom:1px solid var(--line);background:#0d0913}
-header h2{font-size:18px;margin:0}
-.view{flex:1;min-height:0;display:flex;flex-direction:column}
-.chathead{padding:12px 20px;border-bottom:1px solid #2d2038}
-.chathead h3{margin:0}
-.messages{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:18px;scroll-behavior:auto}
-.message{display:flex;gap:10px;margin-bottom:17px;overflow-wrap:anywhere}
-.message .avatar{width:34px;height:34px;font-size:13px}
-.msgbody{min-width:0}
-.meta{display:flex;gap:9px;align-items:baseline;flex-wrap:wrap}
-.meta time{font-size:11px;color:#9b89aa}
-.msgtext{white-space:pre-wrap;margin-top:3px}
-.composer{display:flex;align-items:flex-end;gap:9px;padding:12px;border-top:1px solid var(--line);background:#100b16}
-.composer textarea{resize:none;min-height:45px;max-height:130px;flex:1}
-.composer button{min-height:45px}
-.content{padding:20px;overflow:auto}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:13px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:15px;margin-bottom:12px}
-.card h3{margin-top:0}
-.row{display:flex;gap:8px;align-items:center}
-.row>*{min-width:0}
-.row input{flex:1}
-.item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
-.item:last-child{border-bottom:0}
-.status{margin-top:8px;color:#8df0b2;overflow-wrap:anywhere}
-.error{color:#ff8795}
-.notice{padding:10px 14px;margin:10px 18px;border:1px solid #75451e;background:#2c1c10;border-radius:10px;color:#ffd5a8}
-.empty{color:var(--muted);text-align:center;padding:30px}
-.pill{font-size:11px;border:1px solid #694078;border-radius:20px;padding:4px 9px}
-#menuButton{display:none}
-@media(max-width:740px){
- #app{grid-template-columns:1fr}
- aside{display:none;position:fixed;inset:0 auto 0 0;width:280px;z-index:10;box-shadow:0 0 0 999px #0008}
- aside.open{display:flex}
- #menuButton{display:inline-block}
- header{padding:0 10px}
- .content{padding:12px}
- .messages{padding:12px}
+
+body{
+    margin:0;
+    background:
+        radial-gradient(circle at 20% 0%,#21113d 0%,transparent 35%),
+        radial-gradient(circle at 100% 100%,#3b1709 0%,transparent 30%),
+        var(--bg);
+    color:var(--text);
+    font-family:Inter,Arial,sans-serif;
+    height:100vh;
+    overflow:hidden;
+}
+
+button,input{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+.hidden{
+    display:none!important;
+}
+
+/* LOGIN */
+
+#authScreen{
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#050508;
+}
+
+.authBox{
+    width:min(430px,92%);
+    background:rgba(15,15,23,.96);
+    border:1px solid var(--border);
+    border-radius:22px;
+    padding:35px;
+    box-shadow:0 25px 100px #000;
+}
+
+.logo{
+    text-align:center;
+    font-size:35px;
+    font-weight:900;
+    letter-spacing:4px;
+    background:linear-gradient(90deg,var(--purple),var(--orange));
+    -webkit-background-clip:text;
+    color:transparent;
+}
+
+.subtitle{
+    text-align:center;
+    color:var(--muted);
+    margin:8px 0 30px;
+}
+
+.authBox input{
+    width:100%;
+    padding:13px;
+    margin:7px 0;
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:#090910;
+    color:white;
+    outline:none;
+}
+
+.authBox input:focus{
+    border-color:var(--purple);
+}
+
+.primary{
+    width:100%;
+    border:0;
+    border-radius:10px;
+    padding:13px;
+    margin-top:10px;
+    color:white;
+    font-weight:800;
+    background:linear-gradient(90deg,var(--purple2),var(--purple));
+}
+
+.secondary{
+    border:1px solid var(--border);
+    background:var(--panel2);
+    color:white;
+    border-radius:9px;
+    padding:9px 13px;
+}
+
+.error{
+    color:#ff7183;
+    margin-top:12px;
+    font-size:13px;
+}
+
+/* APP */
+
+#app{
+    display:grid;
+    grid-template-columns:230px 1fr 245px;
+    height:100vh;
+}
+
+/* LEFT */
+
+.sidebar{
+    background:rgba(9,9,14,.94);
+    border-right:1px solid var(--border);
+    display:flex;
+    flex-direction:column;
+}
+
+.brand{
+    padding:23px;
+    font-weight:900;
+    font-size:20px;
+    letter-spacing:2px;
+    border-bottom:1px solid var(--border);
+}
+
+.brand span{
+    color:var(--orange);
+}
+
+.sectionTitle{
+    color:#69677c;
+    font-size:11px;
+    font-weight:900;
+    letter-spacing:1px;
+    padding:20px 15px 8px;
+}
+
+.nav{
+    margin:3px 9px;
+    padding:11px;
+    border-radius:9px;
+    color:#aaa8ba;
+    cursor:pointer;
+}
+
+.nav:hover,
+.nav.active{
+    background:linear-gradient(90deg,#211536,#17111f);
+    color:white;
+}
+
+.nav.admin{
+    color:#ff9b45;
+}
+
+.balance{
+    margin:auto 12px 12px;
+    padding:15px;
+    background:linear-gradient(135deg,#171226,#24150c);
+    border:1px solid #30283e;
+    border-radius:13px;
+}
+
+.balanceTitle{
+    color:#8c899d;
+    font-size:11px;
+}
+
+.balanceValue{
+    font-size:22px;
+    font-weight:900;
+    color:#ffb45d;
+    margin-top:4px;
+}
+
+/* MAIN */
+
+.main{
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+}
+
+.topbar{
+    height:65px;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    padding:0 20px;
+    gap:15px;
+    background:rgba(11,11,17,.8);
+}
+
+.channelName{
+    font-weight:900;
+}
+
+.channelDesc{
+    color:var(--muted);
+    font-size:12px;
+}
+
+.topSpacer{
+    flex:1;
+}
+
+.page{
+    flex:1;
+    overflow:auto;
+    padding:22px;
+}
+
+.messages{
+    flex:1;
+    overflow:auto;
+    padding:20px;
+}
+
+.message{
+    display:flex;
+    gap:12px;
+    margin-bottom:18px;
+}
+
+.avatar{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:linear-gradient(135deg,var(--purple),var(--orange));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+    flex:none;
+}
+
+.msgName{
+    font-weight:800;
+}
+
+.msgTime{
+    color:#666477;
+    font-size:11px;
+    margin-left:7px;
+}
+
+.msgText{
+    margin-top:4px;
+    color:#d2d0dc;
+    white-space:pre-wrap;
+}
+
+.composer{
+    border-top:1px solid var(--border);
+    padding:15px;
+    display:flex;
+    gap:10px;
+}
+
+.composer input{
+    flex:1;
+    border:1px solid var(--border);
+    border-radius:11px;
+    background:#101019;
+    color:white;
+    padding:13px;
+    outline:none;
+}
+
+/* RIGHT */
+
+.rightbar{
+    background:rgba(9,9,14,.94);
+    border-left:1px solid var(--border);
+    overflow:auto;
+}
+
+.rightTitle{
+    padding:20px;
+    border-bottom:1px solid var(--border);
+    font-weight:900;
+}
+
+.member{
+    padding:10px 15px;
+    display:flex;
+    gap:10px;
+    align-items:center;
+}
+
+.memberName{
+    font-size:13px;
+}
+
+.role{
+    font-size:9px;
+    padding:2px 5px;
+    border-radius:4px;
+    margin-left:4px;
+}
+
+.role.admin{
+    color:#ffb45d;
+    background:#38200f;
+}
+
+.role.owner{
+    color:#c99cff;
+    background:#28153e;
+}
+
+.online{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:var(--green);
+}
+
+/* CARDS */
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:15px;
+}
+
+.card{
+    background:rgba(17,17,26,.9);
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:18px;
+}
+
+.card h3{
+    margin:0 0 8px;
+}
+
+.card p{
+    color:var(--muted);
+    font-size:13px;
+}
+
+.stat{
+    font-size:28px;
+    font-weight:900;
+}
+
+.money{
+    color:#ffb45d;
+}
+
+/* ADMIN */
+
+.adminHeader{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.adminBox{
+    background:#0d0d15;
+    border:1px solid #3a2947;
+    border-radius:15px;
+    padding:18px;
+    margin-bottom:15px;
+}
+
+.adminBox input{
+    background:#08080e;
+    border:1px solid var(--border);
+    color:white;
+    padding:10px;
+    border-radius:8px;
+    margin:4px;
+}
+
+.table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.table th,
+.table td{
+    padding:10px;
+    border-bottom:1px solid var(--border);
+    text-align:left;
+    font-size:13px;
+}
+
+/* EVENTS */
+
+.event{
+    border:1px solid #342744;
+    background:linear-gradient(135deg,#141020,#17100c);
+    border-radius:15px;
+    padding:20px;
+    margin-bottom:14px;
+}
+
+.eventTitle{
+    font-size:19px;
+    font-weight:900;
+}
+
+.eventStatus{
+    color:var(--green);
+    font-size:11px;
+    font-weight:900;
+}
+
+/* COMMAND */
+
+.commandHelp{
+    color:var(--muted);
+    line-height:1.7;
+}
+
+.commandHelp code{
+    color:#d2a8ff;
+}
+
+/* MOBILE */
+
+@media(max-width:900px){
+    #app{
+        grid-template-columns:70px 1fr;
+    }
+
+    .rightbar{
+        display:none;
+    }
+
+    .brand{
+        font-size:0;
+        text-align:center;
+    }
+
+    .brand:after{
+        content:"P";
+        font-size:25px;
+        color:var(--purple);
+    }
+
+    .sectionTitle{
+        display:none;
+    }
+
+    .nav{
+        text-align:center;
+        font-size:0;
+    }
+
+    .nav:before{
+        content:"◆";
+        font-size:13px;
+    }
 }
 </style>
 </head>
+
 <body>
-<section id="auth" class="panel">
- <div class="brand">🎃 PILTAE <span>CHAT</span></div>
- <h1>Enter the haunted hangout</h1>
- <p class="muted">Friends, games, group chats and spooky late nights.</p>
- <div class="tabs">
-  <button id="loginTab">Sign in</button>
-  <button id="signupTab" class="secondary">Create account</button>
- </div>
- <form id="authForm">
-  <div id="usernameWrap" class="hidden">
-   <label>Username</label>
-   <input id="signupUsername" minlength="3" maxlength="24" pattern="[A-Za-z0-9_]{3,24}">
-  </div>
-  <label>Email</label><input id="email" type="email" autocomplete="email" required>
-  <label>Password</label><input id="password" type="password" minlength="6" required>
-  <button id="authButton" style="width:100%;margin-top:15px">Sign in</button>
- </form>
- <div id="authStatus" class="status"></div>
-</section>
+
+<!-- AUTH -->
+
+<div id="authScreen">
+    <div class="authBox">
+        <div class="logo">PILTAE</div>
+        <div class="subtitle">CHAT // COMMUNITY // EVENTS</div>
+
+        <input id="email" type="email" placeholder="Email">
+        <input id="password" type="password" placeholder="Password">
+        <input id="username" placeholder="Username (sign up only)">
+
+        <button class="primary" onclick="login()">LOGIN</button>
+        <button class="secondary" style="width:100%;margin-top:8px" onclick="signup()">CREATE ACCOUNT</button>
+
+        <div id="authError" class="error"></div>
+    </div>
+</div>
+
+<!-- APP -->
 
 <div id="app" class="hidden">
- <aside id="sidebar">
-  <div class="brand">🎃 PILTAE <span>CHAT</span></div>
-  <div class="tiny">THE HAUNTED HANGOUT</div>
-  <div class="side-scroll">
-   <div class="section">CHANNELS</div>
-   <button class="nav active" data-channel="general">👻 # general</button>
-   <button class="nav" data-channel="gaming">🎮 # gaming</button>
-   <button class="nav" data-channel="tech">💻 # tech</button>
-   <button class="nav" data-channel="random">🕸️ # random</button>
-   <div class="section">SOCIAL</div>
-   <button class="nav" data-view="friends">🧛 Friends</button>
-   <button class="nav" data-view="groups">🪦 Group chats</button>
-   <button class="nav" data-view="settings">⚙️ Settings</button>
-   <div class="section">YOUR GROUPS</div>
-   <div id="sidebarGroups" class="tiny">Loading…</div>
-   <div class="section">FRIENDS</div>
-   <div id="sidebarFriends" class="tiny">Loading…</div>
-  </div>
-  <div style="border-top:1px solid var(--line);padding-top:12px">
-   <div class="profile"><div id="myAvatar" class="avatar">?</div><div><b id="myName">Loading</b><div id="myRole" class="tiny">member</div></div></div>
-   <button id="signOut" class="secondary" style="width:100%;margin-top:10px">Sign out</button>
-  </div>
- </aside>
- <main class="main">
-  <header>
-   <div class="row"><button id="menuButton" class="secondary">☰</button><div><h2 id="pageTitle">👻 # general</h2><div class="tiny" id="pageSubtitle">The haunted hangout</div></div></div>
-   <button id="refresh" class="secondary">↻ Refresh</button>
-  </header>
 
-  <section id="chatView" class="view">
-   <div class="chathead"><h3 id="channelHeading"># general</h3><span class="tiny">Be cool. Don't feed the ghosts.</span></div>
-   <div id="chatNotice" class="notice hidden"></div>
-   <div id="messages" class="messages"><div class="empty">Loading messages from the crypt…</div></div>
-   <form id="composer" class="composer">
-    <textarea id="messageInput" maxlength="2000" rows="1" placeholder="Send a message… Enter to send, Shift+Enter for a new line" required></textarea>
-    <button id="sendButton">Send ➤</button>
-   </form>
-  </section>
+    <aside class="sidebar">
 
-  <section id="friendsView" class="view hidden"><div class="content">
-   <h2>🧛 Friends</h2>
-   <div class="card"><form id="findForm" class="row"><input id="findUsername" placeholder="Find exact username…" maxlength="24" required><button>Search</button></form><div id="findStatus" class="status"></div><div id="findResult"></div></div>
-   <div class="cards">
-    <div class="card"><h3>Your friends</h3><div id="friendsList">Loading…</div></div>
-    <div class="card"><h3>Incoming requests</h3><div id="incoming">Loading…</div></div>
-    <div class="card"><h3>Sent requests</h3><div id="outgoing">Loading…</div></div>
-   </div>
-  </div></section>
+        <div class="brand">PILT<span>AE</span></div>
 
-  <section id="groupsView" class="view hidden"><div class="content">
-   <h2>🪦 Group chats</h2>
-   <div class="cards">
-    <div class="card"><h3>Create a group</h3><form id="createGroupForm"><label>Group name</label><input id="groupName" maxlength="60" required placeholder="The Midnight Crew"><button style="margin-top:12px">Create group</button></form><div id="groupStatus" class="status"></div></div>
-    <div class="card"><h3>Invite a friend</h3><form id="inviteForm"><label>Group</label><select id="inviteGroup"></select><label>Friend username</label><input id="inviteUsername" required><button style="margin-top:12px">Invite</button></form><div id="inviteStatus" class="status"></div></div>
-   </div>
-   <div class="card"><h3>Your groups</h3><div id="groupsList">Loading…</div></div>
-  </div></section>
+        <div class="sectionTitle">COMMUNITY</div>
 
-  <section id="groupChatView" class="view hidden">
-   <div class="chathead row"><div><h3 id="groupHeading">Group chat</h3><div class="tiny">Private group messages</div></div><button id="backGroups" class="secondary">All groups</button></div>
-   <div id="groupMessages" class="messages"></div>
-   <form id="groupComposer" class="composer"><textarea id="groupMessageInput" maxlength="2000" rows="1" placeholder="Message your group…" required></textarea><button>Send ➤</button></form>
-  </section>
+        <div class="nav active" onclick="showPage('chat')">Chat</div>
+        <div class="nav" onclick="showPage('leaderboard')">Leaderboard</div>
+        <div class="nav" onclick="showPage('events')">Events</div>
+        <div class="nav" onclick="showPage('commands')">Commands</div>
+        <div class="nav" onclick="showPage('profile')">Profile</div>
 
-  <section id="settingsView" class="view hidden"><div class="content">
-   <h2>⚙️ Settings</h2><div class="cards">
-    <div class="card"><h3>Profile</h3><form id="profileForm"><label>Display name</label><input id="displayName" maxlength="40" required><label>Username</label><input id="profileUsername" minlength="3" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" required><button style="margin-top:12px">Save profile</button></form><div id="profileStatus" class="status"></div></div>
-    <div class="card"><h3>🎙️ Microphone test</h3><p class="muted">This only tests your microphone locally. It does not transmit a voice call.</p><select id="micSelect"></select><div class="row" style="margin-top:10px"><button id="micStart">Start test</button><button id="micStop" class="secondary" disabled>Stop</button></div><div style="height:10px;background:#09070c;margin-top:15px;border-radius:20px"><div id="micMeter" style="height:10px;width:0;background:var(--orange);border-radius:20px"></div></div><div id="micStatus" class="tiny">Mic off.</div></div>
-    <div class="card"><h3>👑 Owner tools</h3><p id="ownerText" class="muted">Owner role is controlled by Supabase.</p><div id="ownerTools" class="hidden"><label>Username to ban/unban</label><input id="targetUsername"><div class="row" style="margin-top:10px"><button id="banButton">Ban</button><button id="unbanButton" class="secondary">Unban</button></div><div id="ownerStatus" class="status"></div></div></div>
-   </div>
-  </div></section>
- </main>
+        <div id="adminNav" class="nav admin hidden" onclick="showPage('admin')">
+            ⚡ Admin Control
+        </div>
+
+        <div class="balance">
+            <div class="balanceTitle">YOUR PILTAE COINS</div>
+            <div id="balance" class="balanceValue">0</div>
+        </div>
+
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <div id="pageTitle" class="channelName"># general</div>
+                <div id="pageDescription" class="channelDesc">
+                    Welcome to PILTAE CHAT
+                </div>
+            </div>
+
+            <div class="topSpacer"></div>
+
+            <button class="secondary" onclick="refreshAll()">↻</button>
+            <button class="secondary" onclick="logout()">Logout</button>
+        </header>
+
+        <section id="chatPage" class="page">
+            <div id="messages" class="messages"></div>
+
+            <div class="composer">
+                <input
+                    id="messageInput"
+                    placeholder="Message #general or type /help"
+                    onkeydown="if(event.key==='Enter')sendMessage()"
+                >
+                <button class="primary" style="width:auto;margin:0" onclick="sendMessage()">SEND</button>
+            </div>
+        </section>
+
+        <section id="leaderboardPage" class="page hidden">
+            <h1>💰 Global Leaderboard</h1>
+            <p style="color:var(--muted)">
+                The richest PILTAE players.
+            </p>
+            <div id="leaderboard" class="grid"></div>
+        </section>
+
+        <section id="eventsPage" class="page hidden">
+            <div class="adminHeader">
+                <div>
+                    <h1>🎮 Hosted Events</h1>
+                    <p style="color:var(--muted)">Games and competitions hosted by the community.</p>
+                </div>
+
+                <button id="createEventButton"
+                        class="primary hidden"
+                        style="width:auto"
+                        onclick="openCreateEvent()">
+                    + HOST EVENT
+                </button>
+            </div>
+
+            <div id="events"></div>
+        </section>
+
+        <section id="commandsPage" class="page hidden">
+            <h1>⌨ Commands</h1>
+
+            <div class="card commandHelp">
+
+                <b>General</b><br>
+                <code>/help</code> — show commands<br>
+                <code>/balance</code> — show your coins<br>
+                <code>/richest</code> — global leaderboard<br>
+                <code>/daily</code> — claim daily reward<br>
+                <code>/pay player amount</code> — transfer coins<br>
+                <code>/events</code> — show active events<br><br>
+
+                <b>Admin</b><br>
+                <code>/admin</code> — open admin panel<br>
+                <code>/announce message</code> — create announcement<br>
+                <code>/event start NAME REWARD</code> — create event<br>
+                <code>/event end EVENT_ID</code> — end event<br>
+                <code>/give player amount</code> — give coins<br>
+                <code>/take player amount</code> — remove coins<br>
+                <code>/role player admin</code> — change role<br><br>
+
+                <b>Games</b><br>
+                <code>/mines</code> — open Mines<br>
+                <code>/tag</code> — show active tag events<br>
+                <code>/flip heads 100</code> — virtual coin flip
+
+            </div>
+        </section>
+
+        <section id="profilePage" class="page hidden">
+            <h1>👤 Profile</h1>
+
+            <div class="card">
+                <h3 id="profileUsername">Username</h3>
+                <p id="profileEmail"></p>
+                <p>Role: <b id="profileRole"></b></p>
+                <p>Coins: <b class="money" id="profileCoins">0</b></p>
+            </div>
+        </section>
+
+        <section id="adminPage" class="page hidden">
+
+            <div class="adminHeader">
+                <div>
+                    <h1>⚡ PILTAE CONTROL</h1>
+                    <p style="color:var(--muted)">
+                        Authorized administration console
+                    </p>
+                </div>
+
+                <div id="adminBadge"></div>
+            </div>
+
+            <div class="grid">
+
+                <div class="card">
+                    <h3>👥 Players</h3>
+                    <div id="adminPlayerCount" class="stat">0</div>
+                </div>
+
+                <div class="card">
+                    <h3>💰 Economy</h3>
+                    <div id="adminEconomy" class="stat money">0</div>
+                </div>
+
+                <div class="card">
+                    <h3>🎮 Events</h3>
+                    <div id="adminEventCount" class="stat">0</div>
+                </div>
+
+            </div>
+
+            <br>
+
+            <div class="adminBox">
+                <h3>💰 Economy Control</h3>
+
+                <input id="adminMoneyUser" placeholder="Username">
+                <input id="adminMoneyAmount" type="number" placeholder="Amount">
+
+                <button class="secondary" onclick="adminGive()">GIVE</button>
+                <button class="secondary" onclick="adminTake()">TAKE</button>
+            </div>
+
+            <div class="adminBox">
+                <h3>🛡 Role Control</h3>
+
+                <input id="adminRoleUser" placeholder="Username">
+
+                <select id="adminRoleSelect"
+                        style="background:#08080e;color:white;border:1px solid var(--border);padding:10px;border-radius:8px">
+                    <option value="user">USER</option>
+                    <option value="admin">ADMIN</option>
+                    <option value="owner">OWNER</option>
+                </select>
+
+                <button class="secondary" onclick="changeRole()">UPDATE ROLE</button>
+            </div>
+
+            <div class="adminBox">
+                <h3>📢 Announcement</h3>
+
+                <input id="announcementText"
+                       style="width:70%"
+                       placeholder="Announcement message">
+
+                <button class="secondary" onclick="announce()">POST</button>
+            </div>
+
+            <div class="adminBox">
+                <h3>👥 Player List</h3>
+                <div style="overflow:auto">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Role</th>
+                                <th>Coins</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminPlayers"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <aside class="rightbar">
+
+        <div class="rightTitle">ONLINE PLAYERS</div>
+
+        <div id="members"></div>
+
+    </aside>
+
 </div>
 
 <script>
-(() => {
-"use strict";
-const URL="https://djqrdmwwnkrcbnchwtpe.supabase.co";
-const KEY="sb_publishable_YiYZ36-XRYFd5syczEztCg__Q5impux";
-const db=window.supabase.createClient(URL,KEY);
-const $=id=>document.getElementById(id);
-let authMode="login",me=null,profile=null,channel="general",groups=[],currentGroup=null,sub=null,groupSub=null,friendRows=[],micStream=null,micCtx=null,micFrame=null;
-const channelNames={general:"👻 # general",gaming:"🎮 # gaming",tech:"💻 # tech",random:"🕸️ # random"};
-const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const initial=s=>(String(s||"?")[0]||"?").toUpperCase();
-const time=s=>{const d=new Date(s);return isNaN(d)?"":d.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"})};
-function setStatus(id,msg,error=false){$(id).textContent=msg;$(id).classList.toggle("error",error)}
-function setAuthMode(m){authMode=m;$("usernameWrap").classList.toggle("hidden",m!=="signup");$("signupUsername").required=m==="signup";$("authButton").textContent=m==="signup"?"Create account":"Sign in";setStatus("authStatus","")}
-$("loginTab").onclick=()=>setAuthMode("login");
-$("signupTab").onclick=()=>setAuthMode("signup");
 
-$("authForm").addEventListener("submit",async e=>{
- e.preventDefault();
- $("authButton").disabled=true;
- try{
-  const email=$("email").value.trim(),password=$("password").value;
-  let r;
-  if(authMode==="signup"){
-   const username=$("signupUsername").value.trim();
-   if(!/^[A-Za-z0-9_]{3,24}$/.test(username))throw Error("Username must be 3–24 letters, numbers or underscores.");
-   r=await db.auth.signUp({email,password,options:{data:{username}}});
-  }else r=await db.auth.signInWithPassword({email,password});
-  if(r.error)throw r.error;
-  if(!r.data.session){setStatus("authStatus","Account created. Check your email confirmation, then sign in.");return}
-  await boot(r.data.user);
- }catch(e){setStatus("authStatus",e.message,true)}
- finally{$("authButton").disabled=false}
-});
+/* =========================================================
+   SUPABASE
+   PUBLIC/PUBLISHABLE KEY ONLY
+   NEVER PUT A SERVICE ROLE KEY HERE
+========================================================= */
 
-async function boot(u){
- me=u;
- const r=await db.from("profiles").select("id,username,display_name,role,is_banned").eq("id",u.id).maybeSingle();
- if(r.error||!r.data){setStatus("authStatus","Profile missing. Run the SQL setup below, then sign out and back in.",true);return}
- profile=r.data;
- if(profile.is_banned){await db.auth.signOut();setStatus("authStatus","This account is banned.",true);return}
- $("auth").classList.add("hidden");$("app").classList.remove("hidden");
- updateProfile();await loadGroups();await loadFriends();await showChannel("general");await devices();
-}
-function updateProfile(){
- $("myName").textContent=profile.display_name||profile.username;
- $("myAvatar").textContent=initial(profile.display_name||profile.username);
- $("myRole").textContent=profile.role==="owner"?"👑 OWNER":profile.role==="moderator"?"🛡 MODERATOR":"member";
- $("displayName").value=profile.display_name||profile.username;
- $("profileUsername").value=profile.username;
- $("ownerTools").classList.toggle("hidden",profile.role!=="owner");
- $("ownerText").textContent=profile.role==="owner"?"Owner tools enabled.":"Set your account's role to owner using the SQL below.";
-}
-function showView(v){
- ["chatView","friendsView","groupsView","groupChatView","settingsView"].forEach(id=>$(id).classList.add("hidden"));
- const id={chat:"chatView",friends:"friendsView",groups:"groupsView",groupChat:"groupChatView",settings:"settingsView"}[v];
- if(id)$(id).classList.remove("hidden");
- document.querySelectorAll(".nav").forEach(b=>b.classList.toggle("active",b.dataset.view===v||(v==="chat"&&b.dataset.channel===channel)));
- $("sidebar").classList.remove("open");
-}
-document.querySelectorAll("[data-channel]").forEach(b=>b.onclick=()=>showChannel(b.dataset.channel));
-document.querySelectorAll("[data-view]").forEach(b=>b.onclick=async()=>{showView(b.dataset.view);if(b.dataset.view==="friends")await loadFriends();if(b.dataset.view==="groups"){await loadGroups();await loadFriends()}});
-$("menuButton").onclick=()=>$("sidebar").classList.toggle("open");
-$("refresh").onclick=async()=>{if(!$("chatView").classList.contains("hidden"))await loadMessages();else if(!$("groupChatView").classList.contains("hidden"))await loadGroupMessages();else if(!$("friendsView").classList.contains("hidden"))await loadFriends();else if(!$("groupsView").classList.contains("hidden"))await loadGroups()};
-$("signOut").onclick=async()=>{await stopMic();await db.auth.signOut();location.reload()};
+const SUPABASE_URL =
+    "https://djqrdmwwnkrcbnchwtpe.supabase.co";
 
-function renderMessages(el,rows){
- const wasBottom=el.scrollHeight-el.scrollTop-el.clientHeight<100,oldTop=el.scrollTop;
- el.innerHTML=rows.length?rows.map(m=>`<div class="message"><div class="avatar">${esc(initial(m.display_name||m.username))}</div><div class="msgbody"><div class="meta"><b>${esc(m.display_name||m.username||"Ghost")}</b><time>${esc(time(m.created_at))}</time></div><div class="msgtext">${esc(m.content)}</div></div></div>`).join(""):'<div class="empty">It is quiet in here… be the first to speak. 👻</div>';
- if(wasBottom)el.scrollTop=el.scrollHeight;else el.scrollTop=oldTop;
+const SUPABASE_KEY =
+    "sb_publishable_YiYZ36-XRYFd5syczEztCg__Q5impux";
+
+const db = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+let currentUser = null;
+let currentProfile = null;
+let currentChannel = "general";
+
+/* =========================================================
+   AUTH
+========================================================= */
+
+async function login(){
+
+    clearError();
+
+    const email =
+        document.getElementById("email").value.trim();
+
+    const password =
+        document.getElementById("password").value;
+
+    if(!email || !password){
+        showError("Enter your email and password.");
+        return;
+    }
+
+    const {error} =
+        await db.auth.signInWithPassword({
+            email,
+            password
+        });
+
+    if(error){
+        showError(error.message);
+        return;
+    }
+
+    await startApp();
 }
-async function showChannel(c){
- channel=c;currentGroup=null;showView("chat");
- $("pageTitle").textContent=channelNames[c];$("channelHeading").textContent="# "+c;
- $("pageSubtitle").textContent="The haunted hangout";
- await loadMessages();
- if(sub)await db.removeChannel(sub);
- sub=db.channel("messages-"+c).on("postgres_changes",{event:"INSERT",schema:"public",table:"messages",filter:"channel=eq."+c},()=>loadMessages()).subscribe();
+
+async function signup(){
+
+    clearError();
+
+    const email =
+        document.getElementById("email").value.trim();
+
+    const password =
+        document.getElementById("password").value;
+
+    const username =
+        document.getElementById("username").value.trim();
+
+    if(!email || !password || !username){
+        showError("Fill in email, password and username.");
+        return;
+    }
+
+    const {data,error} =
+        await db.auth.signUp({
+            email,
+            password,
+            options:{
+                data:{
+                    username:username
+                }
+            }
+        });
+
+    if(error){
+        showError(error.message);
+        return;
+    }
+
+    if(!data.session){
+        showError("Account created. Check your email if confirmation is enabled.");
+        return;
+    }
+
+    await startApp();
 }
+
+async function logout(){
+    await db.auth.signOut();
+    location.reload();
+}
+
+function showError(text){
+    document.getElementById("authError").textContent = text;
+}
+
+function clearError(){
+    document.getElementById("authError").textContent = "";
+}
+
+/* =========================================================
+   START
+========================================================= */
+
+async function startApp(){
+
+    const {
+        data:{user}
+    } = await db.auth.getUser();
+
+    if(!user){
+        return;
+    }
+
+    currentUser = user;
+
+    await loadProfile();
+
+    document
+        .getElementById("authScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("app")
+        .classList.remove("hidden");
+
+    if(isAdmin()){
+        document
+            .getElementById("adminNav")
+            .classList.remove("hidden");
+
+        document
+            .getElementById("createEventButton")
+            .classList.remove("hidden");
+    }
+
+    await refreshAll();
+
+    subscribeRealtime();
+}
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+async function loadProfile(){
+
+    const {data,error} =
+        await db
+        .from("profiles")
+        .select("*")
+        .eq("id",currentUser.id)
+        .single();
+
+    if(error){
+        console.error(error);
+        return;
+    }
+
+    currentProfile = data;
+
+    document.getElementById("profileUsername").textContent =
+        data.username || "Player";
+
+    document.getElementById("profileEmail").textContent =
+        currentUser.email || "";
+
+    document.getElementById("profileRole").textContent =
+        data.role || "user";
+
+    document.getElementById("adminBadge").textContent =
+        (data.role || "user").toUpperCase();
+}
+
+function isAdmin(){
+    return currentProfile &&
+        (currentProfile.role === "admin" ||
+         currentProfile.role === "owner");
+}
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function showPage(page){
+
+    const pages = [
+        "chat",
+        "leaderboard",
+        "events",
+        "commands",
+        "profile",
+        "admin"
+    ];
+
+    pages.forEach(p=>{
+        const el =
+            document.getElementById(p+"Page");
+
+        if(el){
+            el.classList.toggle(
+                "hidden",
+                p !== page
+            );
+        }
+    });
+
+    const titles = {
+        chat:["# "+currentChannel,"Community chat"],
+        leaderboard:["💰 Leaderboard","Global player economy"],
+        events:["🎮 Events","Hosted games"],
+        commands:["⌨ Commands","PILTAE command system"],
+        profile:["👤 Profile","Your account"],
+        admin:["⚡ Admin Control","Authorized controls"]
+    };
+
+    document.getElementById("pageTitle").textContent =
+        titles[page][0];
+
+    document.getElementById("pageDescription").textContent =
+        titles[page][1];
+
+    if(page === "leaderboard"){
+        loadLeaderboard();
+    }
+
+    if(page === "events"){
+        loadEvents();
+    }
+
+    if(page === "admin"){
+        if(!isAdmin()){
+            alert("You do not have admin permissions.");
+            showPage("chat");
+            return;
+        }
+
+        loadAdmin();
+    }
+}
+
+/* =========================================================
+   CHAT
+========================================================= */
+
 async function loadMessages(){
- const el=$("messages"),oldTop=el.scrollTop,wasBottom=el.scrollHeight-el.scrollTop-el.clientHeight<100;
- const r=await db.from("messages").select("id,user_id,username,content,channel,created_at").eq("channel",channel).order("created_at",{ascending:true}).limit(300);
- if(r.error){$("chatNotice").classList.remove("hidden");$("chatNotice").textContent="Can't load messages: "+r.error.message;return}
- $("chatNotice").classList.add("hidden");
- const ids=[...new Set((r.data||[]).map(m=>m.user_id).filter(Boolean))];let map={};
- if(ids.length){const p=await db.from("profiles").select("id,username,display_name").in("id",ids);(p.data||[]).forEach(x=>map[x.id]=x)}
- const rows=(r.data||[]).map(m=>({...m,username:map[m.user_id]?.username||m.username,display_name:map[m.user_id]?.display_name||map[m.user_id]?.username||m.username}));
- renderMessages(el,rows);
- if(!wasBottom)el.scrollTop=oldTop;
-}
-$("composer").addEventListener("submit",async e=>{
- e.preventDefault(); // Stops the page from reloading/resetting.
- const input=$("messageInput"),content=input.value.trim();
- if(!content||!me)return;
- const btn=$("sendButton");btn.disabled=true;
- try{
-  const r=await db.from("messages").insert({user_id:me.id,username:profile.username,content,channel});
-  if(r.error)throw r.error;
-  input.value="";input.style.height="auto";
-  await loadMessages();$("messages").scrollTop=$("messages").scrollHeight;input.focus();
- }catch(e){$("chatNotice").classList.remove("hidden");$("chatNotice").textContent="Message failed: "+e.message}
- finally{btn.disabled=false}
-});
-$("messageInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("composer").requestSubmit()}});
-$("messageInput").addEventListener("input",e=>{e.target.style.height="auto";e.target.style.height=Math.min(e.target.scrollHeight,130)+"px"});
 
-async function loadGroups(){
- if(!me)return;
- const r=await db.from("chat_group_members").select("group_id,chat_groups(id,name)").eq("user_id",me.id);
- if(r.error){$("groupsList").textContent="Group setup SQL required: "+r.error.message;$("sidebarGroups").textContent="Run the SQL setup.";return}
- groups=(r.data||[]).map(x=>x.chat_groups).filter(Boolean);
- $("sidebarGroups").innerHTML=groups.length?groups.map(g=>`<button class="nav" data-open-group="${esc(g.id)}">🪦 ${esc(g.name)}</button>`).join(""):"<div class='tiny'>No groups yet.</div>";
- $("groupsList").innerHTML=groups.length?groups.map(g=>`<div class="item"><b>🪦 ${esc(g.name)}</b><button data-open-group="${esc(g.id)}">Open</button></div>`).join(""):"You have not joined a group yet.";
- $("inviteGroup").innerHTML=groups.map(g=>`<option value="${esc(g.id)}">${esc(g.name)}</option>`).join("");
- if(!groups.length)$("inviteGroup").innerHTML='<option value="">Create a group first</option>';
- document.querySelectorAll("[data-open-group]").forEach(b=>b.onclick=()=>openGroup(b.dataset.openGroup));
-}
-$("createGroupForm").onsubmit=async e=>{
- e.preventDefault();setStatus("groupStatus","Creating…");
- const r=await db.rpc("create_chat_group",{group_name:$("groupName").value.trim()});
- if(r.error){setStatus("groupStatus",r.error.message,true);return}
- $("groupName").value="";setStatus("groupStatus","Group created!");await loadGroups();if(r.data)openGroup(r.data);
-};
-$("inviteForm").onsubmit=async e=>{
- e.preventDefault();
- const r=await db.rpc("invite_to_chat_group",{target_username:$("inviteUsername").value.trim(),target_group_id:$("inviteGroup").value});
- if(r.error)setStatus("inviteStatus",r.error.message,true);
- else{setStatus("inviteStatus","Friend added to the group.");$("inviteUsername").value=""}
-};
-async function openGroup(id){
- currentGroup=groups.find(g=>g.id===id);if(!currentGroup)return;
- showView("groupChat");$("pageTitle").textContent="🪦 "+currentGroup.name;$("groupHeading").textContent=currentGroup.name;
- await loadGroupMessages();
- if(groupSub)await db.removeChannel(groupSub);
- groupSub=db.channel("groupmessages-"+id).on("postgres_changes",{event:"INSERT",schema:"public",table:"chat_group_messages",filter:"group_id=eq."+id},()=>loadGroupMessages()).subscribe();
-}
-async function loadGroupMessages(){
- if(!currentGroup)return;
- const el=$("groupMessages"),oldTop=el.scrollTop,wasBottom=el.scrollHeight-el.scrollTop-el.clientHeight<100;
- const r=await db.from("chat_group_messages").select("id,user_id,content,created_at").eq("group_id",currentGroup.id).order("created_at",{ascending:true}).limit(300);
- if(r.error){el.innerHTML=`<div class="empty">Couldn't load group: ${esc(r.error.message)}</div>`;return}
- const ids=[...new Set((r.data||[]).map(m=>m.user_id))];let map={};
- if(ids.length){const p=await db.from("profiles").select("id,username,display_name").in("id",ids);(p.data||[]).forEach(x=>map[x.id]=x)}
- renderMessages(el,(r.data||[]).map(m=>({...m,username:map[m.user_id]?.username,display_name:map[m.user_id]?.display_name||map[m.user_id]?.username})));
- if(!wasBottom)el.scrollTop=oldTop;
-}
-$("groupComposer").onsubmit=async e=>{
- e.preventDefault();if(!currentGroup)return;
- const input=$("groupMessageInput"),content=input.value.trim();if(!content)return;
- const r=await db.from("chat_group_messages").insert({group_id:currentGroup.id,user_id:me.id,content});
- if(r.error){alert("Group message failed: "+r.error.message);return}
- input.value="";input.style.height="auto";await loadGroupMessages();$("groupMessages").scrollTop=$("groupMessages").scrollHeight;input.focus();
-};
-$("groupMessageInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("groupComposer").requestSubmit()}});
-$("groupMessageInput").addEventListener("input",e=>{e.target.style.height="auto";e.target.style.height=Math.min(e.target.scrollHeight,130)+"px"});
-$("backGroups").onclick=()=>{showView("groups");loadGroups()};
+    const {data,error} =
+        await db
+        .from("chat_messages")
+        .select(`
+            id,
+            message,
+            created_at,
+            user_id,
+            profiles(username,role)
+        `)
+        .eq("channel",currentChannel)
+        .order("created_at",{ascending:true})
+        .limit(200);
 
-async function loadFriends(){
- if(!me)return;
- const r=await db.from("friendships").select("id,requester_id,addressee_id,status").or(`requester_id.eq.${me.id},addressee_id.eq.${me.id}`);
- if(r.error){$("friendsList").textContent="Run the friends SQL setup: "+r.error.message;return}
- friendRows=r.data||[];
- const ids=[...new Set(friendRows.flatMap(x=>[x.requester_id,x.addressee_id]).filter(id=>id!==me.id))];let map={};
- if(ids.length){const p=await db.from("profiles").select("id,username,display_name").in("id",ids);(p.data||[]).forEach(x=>map[x.id]=x)}
- const person=(p,buttons="")=>`<div class="item"><div><b>${esc(p.display_name||p.username)}</b><div class="tiny">@${esc(p.username)}</div></div><div class="row">${buttons}</div></div>`;
- const accepted=friendRows.filter(x=>x.status==="accepted").map(x=>map[x.requester_id===me.id?x.addressee_id:x.requester_id]).filter(Boolean);
- const incoming=friendRows.filter(x=>x.status==="pending"&&x.addressee_id===me.id);
- const outgoing=friendRows.filter(x=>x.status==="pending"&&x.requester_id===me.id);
- $("friendsList").innerHTML=accepted.length?accepted.map(p=>person(p,`<button class="secondary" data-remove="${esc(p.id)}">Remove</button>`)).join(""):"No friends yet.";
- $("incoming").innerHTML=incoming.length?incoming.map(x=>map[x.requester_id]?person(map[x.requester_id],`<button data-accept="${esc(x.id)}">Accept</button><button class="secondary" data-delete="${esc(x.id)}">Decline</button>`):"").join(""):"No incoming requests.";
- $("outgoing").innerHTML=outgoing.length?outgoing.map(x=>map[x.addressee_id]?person(map[x.addressee_id],`<button class="secondary" data-delete="${esc(x.id)}">Cancel</button>`):"").join(""):"No sent requests.";
- $("sidebarFriends").innerHTML=accepted.map(p=>`<button class="nav" data-search-friend="${esc(p.username)}">🦇 ${esc(p.username)}</button>`).join("")||"No friends yet.";
- document.querySelectorAll("[data-accept]").forEach(b=>b.onclick=async()=>{const x=await db.from("friendships").update({status:"accepted"}).eq("id",b.dataset.accept);if(x.error)alert(x.error.message);loadFriends()});
- document.querySelectorAll("[data-delete]").forEach(b=>b.onclick=async()=>{const x=await db.from("friendships").delete().eq("id",b.dataset.delete);if(x.error)alert(x.error.message);loadFriends()});
- document.querySelectorAll("[data-remove]").forEach(b=>b.onclick=async()=>{const f=friendRows.find(x=>x.status==="accepted"&&(x.requester_id===b.dataset.remove||x.addressee_id===b.dataset.remove));if(f)await db.from("friendships").delete().eq("id",f.id);loadFriends()});
- document.querySelectorAll("[data-search-friend]").forEach(b=>b.onclick=()=>{showView("friends");$("findUsername").value=b.dataset.searchFriend});
-}
-$("findForm").onsubmit=async e=>{
- e.preventDefault();const username=$("findUsername").value.trim();setStatus("findStatus","Searching…");$("findResult").innerHTML="";
- const r=await db.from("profiles").select("id,username,display_name").ilike("username",username).neq("id",me.id).limit(1);
- if(r.error){setStatus("findStatus",r.error.message,true);return}
- if(!r.data.length){setStatus("findStatus","User not found.");return}
- const p=r.data[0];
- const existing=friendRows.find(x=>(x.requester_id===me.id&&x.addressee_id===p.id)||(x.requester_id===p.id&&x.addressee_id===me.id));
- if(existing){setStatus("findStatus",existing.status==="accepted"?"Already friends.":"A request already exists.");return}
- $("findResult").innerHTML=`<div class="item"><b>${esc(p.display_name||p.username)} (@${esc(p.username)})</b><button id="addFriend">Add friend</button></div>`;
- $("addFriend").onclick=async()=>{const x=await db.from("friendships").insert({requester_id:me.id,addressee_id:p.id,status:"pending"});if(x.error)setStatus("findStatus",x.error.message,true);else{setStatus("findStatus","Friend request sent!");await loadFriends()}};
-};
-$("profileForm").onsubmit=async e=>{
- e.preventDefault();const username=$("profileUsername").value.trim(),display=$("displayName").value.trim();
- const r=await db.rpc("update_my_profile",{new_username:username,new_display_name:display});
- if(r.error){setStatus("profileStatus",r.error.message,true);return}
- profile={...profile,username,display_name:display};updateProfile();setStatus("profileStatus","Profile saved.");
-};
-async function banUser(value){
- const username=$("targetUsername").value.trim();if(!username)return setStatus("ownerStatus","Enter a username.",true);
- const r=await db.rpc("owner_set_user_ban",{target_username:username,ban_value:value});
- setStatus("ownerStatus",r.error?r.error.message:(value?"User banned.":"User unbanned."),!!r.error);
-}
-$("banButton").onclick=()=>banUser(true);$("unbanButton").onclick=()=>banUser(false);
+    if(error){
+        console.error(error);
+        return;
+    }
 
-async function devices(){
- try{const d=(await navigator.mediaDevices.enumerateDevices()).filter(x=>x.kind==="audioinput");$("micSelect").innerHTML=d.map((x,i)=>`<option value="${esc(x.deviceId)}">${esc(x.label||"Microphone "+(i+1))}</option>`).join("")||'<option value="">No microphone found</option>'}catch(e){$("micSelect").innerHTML='<option value="">Allow microphone access to list devices</option>'}
+    const box =
+        document.getElementById("messages");
+
+    box.innerHTML = "";
+
+    data.forEach(msg=>{
+
+        const name =
+            msg.profiles?.username || "Unknown";
+
+        const initial =
+            name.charAt(0).toUpperCase();
+
+        const role =
+            msg.profiles?.role || "user";
+
+        const time =
+            new Date(msg.created_at)
+            .toLocaleTimeString([],{
+                hour:"2-digit",
+                minute:"2-digit"
+            });
+
+        box.innerHTML += `
+            <div class="message">
+                <div class="avatar">${initial}</div>
+
+                <div>
+                    <div class="msgName">
+                        ${escapeHtml(name)}
+                        ${roleBadge(role)}
+                        <span class="msgTime">${time}</span>
+                    </div>
+
+                    <div class="msgText">
+                        ${escapeHtml(msg.message)}
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    box.scrollTop = box.scrollHeight;
 }
-async function stopMic(){
- if(micFrame)cancelAnimationFrame(micFrame);micFrame=null;
- if(micStream)micStream.getTracks().forEach(t=>t.stop());micStream=null;
- if(micCtx){await micCtx.close().catch(()=>{});micCtx=null}
- $("micMeter").style.width="0";$("micStart").disabled=false;$("micStop").disabled=true;$("micStatus").textContent="Mic off.";
+
+async function sendMessage(){
+
+    const input =
+        document.getElementById("messageInput");
+
+    const text =
+        input.value.trim();
+
+    if(!text){
+        return;
+    }
+
+    if(text.startsWith("/")){
+        input.value = "";
+        await command(text);
+        return;
+    }
+
+    const {error} =
+        await db
+        .from("chat_messages")
+        .insert({
+            user_id:currentUser.id,
+            channel:currentChannel,
+            message:text
+        });
+
+    if(error){
+        alert(error.message);
+        return;
+    }
+
+    input.value = "";
 }
-$("micStart").onclick=async()=>{
- try{
-  await stopMic();const id=$("micSelect").value;
-  micStream=await navigator.mediaDevices.getUserMedia({audio:id?{deviceId:{exact:id}}:true});
-  micCtx=new(window.AudioContext||window.webkitAudioContext)();
-  const source=micCtx.createMediaStreamSource(micStream),an=micCtx.createAnalyser();an.fftSize=256;source.connect(an);
-  const arr=new Uint8Array(an.frequencyBinCount);$("micStart").disabled=true;$("micStop").disabled=false;$("micStatus").textContent="Microphone test running.";
-  const tick=()=>{an.getByteTimeDomainData(arr);let sum=0;for(const v of arr)sum+=((v-128)/128)**2;$("micMeter").style.width=Math.min(100,Math.sqrt(sum/arr.length)*350)+"%";micFrame=requestAnimationFrame(tick)};tick();await devices();
- }catch(e){$("micStatus").textContent="Microphone error: "+e.message;await stopMic()}
-};
-$("micStop").onclick=stopMic;
-db.auth.getSession().then(r=>{if(r.data.session)boot(r.data.session.user)});
-db.auth.onAuthStateChange((event,session)=>{if(event==="SIGNED_IN"&&session?.user&&!me)boot(session.user)});
+
+function roleBadge(role){
+
+    if(role === "owner"){
+        return `<span class="role owner">OWNER</span>`;
+    }
+
+    if(role === "admin"){
+        return `<span class="role admin">ADMIN</span>`;
+    }
+
+    return "";
+}
+
+function escapeHtml(value){
+
+    return String(value)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
+
+/* =========================================================
+   COMMAND SYSTEM
+========================================================= */
+
+async function command(raw){
+
+    const parts =
+        raw.trim().split(/\s+/);
+
+    const cmd =
+        parts[0].toLowerCase();
+
+    const args =
+        parts.slice(1);
+
+    switch(cmd){
+
+        case "/help":
+            showPage("commands");
+            break;
+
+        case "/balance":
+            await loadBalance();
+            alert(
+                "Your balance: " +
+                document.getElementById("balance").textContent +
+                " coins"
+            );
+            break;
+
+        case "/richest":
+            showPage("leaderboard");
+            break;
+
+        case "/events":
+            showPage("events");
+            break;
+
+        case "/daily":
+            await dailyReward();
+            break;
+
+        case "/pay":
+            if(args.length !== 2){
+                alert("Usage: /pay username amount");
+                return;
+            }
+
+            await payPlayer(
+                args[0],
+                Number(args[1])
+            );
+            break;
+
+        case "/mines":
+            openMines();
+            break;
+
+        case "/tag":
+            showPage("events");
+            break;
+
+        case "/flip":
+            if(args.length !== 2){
+                alert("Usage: /flip heads 100");
+                return;
+            }
+
+            await coinFlip(
+                args[0],
+                Number(args[1])
+            );
+            break;
+
+        case "/admin":
+            if(!isAdmin()){
+                alert("ADMIN ACCESS DENIED");
+                return;
+            }
+
+            showPage("admin");
+            break;
+
+        case "/announce":
+            if(!isAdmin()){
+                alert("ADMIN ACCESS DENIED");
+                return;
+            }
+
+            if(!args.length){
+                alert("Usage: /announce message");
+                return;
+            }
+
+            await createAnnouncement(
+                args.join(" ")
+            );
+            break;
+
+        case "/give":
+            if(!isAdmin()){
+                alert("ADMIN ACCESS DENIED");
+                return;
+            }
+
+            if(args.length !== 2){
+                alert("Usage: /give username amount");
+                return;
+            }
+
+            await adjustMoney(
+                args[0],
+                Number(args[1])
+            );
+            break;
+
+        case "/take":
+            if(!isAdmin()){
+                alert("ADMIN ACCESS DENIED");
+                return;
+            }
+
+            if(args.length !== 2){
+                alert("Usage: /take username amount");
+                return;
+            }
+
+            await adjustMoney(
+                args[0],
+                -Number(args[1])
+            );
+            break;
+
+        case "/role":
+            if(!isAdmin()){
+                alert("ADMIN ACCESS DENIED");
+                return;
+            }
+
+            if(args.length !== 2){
+                alert("Usage: /role username admin");
+                return;
+            }
+
+            await updateRole(
+                args[0],
+                args[1]
+            );
+            break;
+
+        default:
+            alert("Unknown command. Type /help.");
+    }
+}
+
+/* =========================================================
+   ECONOMY
+========================================================= */
+
+async function loadBalance(){
+
+    const {data,error} =
+        await db.rpc("get_my_balance");
+
+    if(error){
+        console.error(error);
+        return;
+    }
+
+    const amount =
+        Number(data || 0);
+
+    document.getElementById("balance").textContent =
+        amount.toLocaleString();
+
+    document.getElementById("profileCoins").textContent =
+        amount.toLocaleString();
+}
+
+async function payPlayer(username,amount){
+
+    if(!Number.isInteger(amount) || amount <= 0){
+        alert("Amount must be a positive whole number.");
+        return;
+    }
+
+    const {data,error} =
+        await db.rpc("pay_player",{
+            p_username:username,
+            p_amount:amount
+        });
+
+    if(error){
+        alert(error.message);
+        return;
+    }
+
+    alert(data || "Payment complete.");
+
+    await loadBalance();
+    await loadLeaderboard();
+}
+
+async function dailyReward(){
+
+    const {data,error} =
+        await db.rpc("claim_daily");
+
+    if(error){
+        alert(error.message);
+        return;
+    }
+
+    alert(data || "Daily reward claimed!");
+
+    await loadBalance();
+}
+
+async function coinFlip(choice,amount){
+
+    choice =
+        choice.toLowerCase();
+
+    if(choice !== "heads" && choice !== "tails"){
+        alert("Choose heads or tails.");
+        return;
+    }
+
+    if(!Number.isInteger(amount) || amount <= 0){
+        alert("Invalid amount.");
+        return;
+    }
+
+    const {data,error} =
+        await db.rpc("coin_flip",{
+            p_choice:choice,
+            p_amount:amount
+        });
+
+    if(error){
+        alert(error.message);
+        return;
+    }
+
+    alert(data || "Coin flip complete.");
+
+    await loadBalance();
+    await loadLeaderboard();
+}
+
+/* =========================================================
+   LEADERBOARD
+========================================================= */
+
+async function loadLeaderboard(){
+
+    const {data,error} =
+        await db
+        .from("economy_profiles")
+        .select(`
+            user_id,
+            balance,
+            profiles(username,role)
+        `)
+        .order("balance",{ascending:false})
+        .limit(50);
+
+    if(error){
+        console.error(error);
+        return;
+    }
+
+    const box =
+        document.getElementById("leaderboard");
+
+    box.innerHTML = "";
+
+    data.forEach((row,index)=>{
+
+        const username =
+            row.profiles?.username || "Unknown";
+
+        box.innerHTML += `
+            <div class="card">
+                <div style="color:#777">
+                    #${index+1}
+                </div>
+
+                <h3>${escapeHtml(username)}</h3>
+
+                <div class="stat money">
+                    ${Number(row.balance).toLocaleString()}
+                </div>
+
+                <div style="color:#777">
+                    PILTAE COINS
+                </div>
+            </div>
+        `;
+    });
+}
+
+/* =========================================================
+   EVENTS
+========================================================= */
+
+async function loadEvents(){
+
+    const {data,error} =
+        await db
+        .from("events")
+        .select(`
+            id,
+            name,
+            game_type,
+            reward,
+            status,
+            created_at,
+            profiles(username)
+        `)
+        .order("created_at",{ascending:false})
+        .limit(50);
+
+    if(error){
+        console.error(error);
+        return;
+    }
+
+    const box =
+        document.getElementById("events");
+
+    box.innerHTML = "";
+
+    data.forEach(event=>{
+
+        box.innerHTML += `
+            <div class="event">
+
+                <div class="eventStatus">
+                    ${escapeHtml(event.status.toUpperCase())}
+                </div>
+
+                <div class="eventTitle">
+                    ${escapeHtml(event.name)}
+                </div>
+
+                <p>
+                    GAME:
+                    <b>${escapeHtml(event.game_type)}</b>
+                </p>
+
+                <p>
+                    REWARD:
+                    <b class="money">
+                        ${Number(event.reward).toLocaleString()} coins
+                    </b>
+                </p>
+
+                <p>
+                    HOST:
+                    ${escapeHtml(event.profiles?.username || "Unknown")}
+                </p>
+
+                ${
+                    event.status === "active"
+                    ?
+                    `<button class="secondary"
+                        onclick="joinEvent('${event.id}')">
+                        JOIN EVENT
+                    </button>`
+                    :
+                    ""
+                }
+
+            </div>
+        `;
+    });
+}
+
+async function joinEvent(id){
+
+    const {data,error} =
+        await db.rpc("join_event",{
+            p_event_id:id
+        });
+
+    if(error){
+        alert(error.message);
+        return;
+    }
+
+    alert(data || "Joined event!");
+    await loadEvents();
+}
+
+function openCreateEvent(){
+
+    if(!isAdmin()){
+        alert("ADMIN ACCESS DENIED");
+        return;
+    }
+
+    const name =
+        prompt("Event name:");
+
+    if(!name){
+        return;
+    }
+
+    const type =
+        prompt("Game type: tag / mines / trivia");
+
+    if(!type){
+        return;
+    }
+
+    const reward =
+        Number(prompt("Reward coins:"));
+
+    if(!Number.isInteger(reward) || reward < 0){
+        alert("Invalid reward.");
+        return;
+    }
+
+    createEvent(
+        name,
+        type,
+        reward
+    );
+}
+
+async function createEvent(name,type,reward){
+
+    const {data,error} =
+        await db.rpc("admin_create_event",{
+            p_name:name,
+            p_game_type:type,
+            p_reward:reward
+        });
+
+    if(error){
+        alert(error.message);
+        return;
+    }
+
+    alert("Event created!");
+    await loadEvents();
+}
+
+/* =========================================================
+   MINES
+========================================================= */
+
+function openMines(){
+
+    const size = 5;
+    const mines = 5;
+
+    const modal = document.createElement("div");
+
+    modal.style.position = "fixed";
+    modal.style.inset = "0";
+    modal.style.background = "rgba(0,0,0,.9)";
+    modal.style.zIndex = "9999";
+    modal.style.display = "flex";
+    modal.style.alignItems = "center";
+    modal.style.justifyContent = "center";
+
+    modal.innerHTML = `
+        <div style="
+            width:350px;
+            background:#11111a;
+            border:1px solid #39294d;
+            border-radius:18px;
+            padding:25px;
+        ">
+            <h2>💣 PILTAE MINES</h2>
+
+            <p style="color:#888">
+                Demo game mode. Virtual coins only.
+            </p>
+
+            <div id="mineGrid"
+                style="
+                    display:grid;
+                    grid-template-columns:repeat(5,1fr);
+                    gap:7px;
+                    margin:20px 0;
+                ">
+            </div>
+
+            <button class="secondary"
+                style="width:100%"
+                onclick="this.closest('div[style*=fixed]').remove()">
+                CLOSE
+            </button>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    const grid =
+        modal.querySelector("#mineGrid");
+
+    const minePositions =
+        new Set();
+
+    while(minePositions.size < mines){
+        minePositions.add(
+            Math.floor(Math.random()*25)
+        );
+    }
+
+    for(let i=0;i<25;i++){
+
+        const button =
+            document.createElement("button");
+
+        button.textContent = "?";
+
+        button.style.height = "48px";
+        button.style.background = "#1c1c29";
+        button.style.color = "white";
+        button.style.border = "1px solid #343447";
+        button.style.borderRadius = "7px";
+
+        button.onclick = ()=>{
+
+            if(minePositions.has(i)){
+                button.textContent = "💣";
+                button.style.background = "#5a1724";
+                alert("BOOM! You hit a mine.");
+            }else{
+                button.textContent = "💎";
+                button.style.background = "#173c31";
+            }
+
+            button.disabled = true;
+        };
+
+        grid.appendChild(button);
+    }
+}
+
+/* =========================================================
+   ADMIN
+========================================================= */
+
+async function loadAdmin(){
+
+    if(!isAdmin()){
+        return;
+    }
+
+    const {data,error} =
+        await db
+        .from("economy_profiles")
+        .select(`
+            user_id,
+            balance,
+            profiles(username,role)
+        `)
+        .order("balance",{ascending:false});
+
+    if(error){
+        console.error(error);
+        return;
+    }
+
+    document.getElementById("adminPlayerCount").textContent =
+        data.length;
+
+    document.getElementById("adminEconomy").textContent =
+        data.reduce(
+            (sum,x)=>sum+Number(x.balance||0),
+            0
+        ).toLocaleString();
+
+    const body =
+        document.getElementById("adminPlayers");
+
+    body.innerHTML = "";
+
+    data.forEach(row=>{
+
+        body.innerHTML += `
+            <tr>
+                <td>${escapeHtml(row.profiles?.username || "Unknown")}</td>
+                <td>${escapeHtml(row.profiles?.role || "user")}</td>
+                <td class="money">${Number(row.balance).toLocaleString()}</td>
+            </tr>
+        `;
+    });
+
+    const {count} =
+        await db
+        .from("events")
+        .select("*",{count:"exact",head:true});
+
+    document.getElementById("adminEventCount").textContent =
+        count || 0;
+}
+
+async function adminGive(){
+
+    const username =
+        document.getElementById("adminMoneyUser").value.trim();
+
+    const amount =
+        Number(document.getElementById("adminMoneyAmount").value);
+
+    if(!username || !Number.isInteger(amount) || amount <= 0){
+        alert("Enter a username and positive amount.");
+        return;
+    }
+
+    await adjustMoney(username,amount);
+}
+
+async function adminTake(){
+
+    const username =
+        document.getElementById("adminMoneyUser").value.trim();
+
+    const amount =
+        Number(document.getElementById("adminMoneyAmount").value);
+
+    if(!username || !Number.isInteger(amount) || amount <= 0){
+        alert("Enter a username and positive amount.");
+        return;
+    }
+
+    await adjustMoney(username,-amount);
+}
+
+async function adjustMoney(username,amount){
+
+    const {data,error} =
+        await db.rpc("admin_adjust_balance",{
+            p_username:username,
+            p_amount:amount
+        });
+
+    if(error){
+        alert(error.message);
+        return;
+    }
+
+    alert(data || "Balance updated.");
+
+    await loadBalance();
+    await loadLeaderboard();
+    await loadAdmin();
+}
+
+async function changeRole(){
+
+    const username =
+        document.getElementById("adminRoleUser").value.trim();
+
+    const role =
+        document.getElementById("adminRoleSelect").value;
+
+    if(!username){
+        alert("Enter a username.");
+        return;
+    }
+
+    await updateRole(username,role);
+}
+
+async function updateRole(username,role){
+
+    if(!["user","admin","owner"].includes(role)){
+        alert("Invalid role.");
+        return;
+    }
+
+    const {data,error} =
+        await db.rpc("admin_set_role",{
+            p_username:username,
+            p_role:role
+        });
+
+    if(error){
+        alert(error.message);
+        return;
+    }
+
+    alert(data || "Role updated.");
+    await loadAdmin();
+}
+
+async function announce(){
+
+    const text =
+        document.getElementById("announcementText")
+        .value.trim();
+
+    if(!text){
+        return;
+    }
+
+    await createAnnouncement(text);
+
+    document.getElementById("announcementText").value = "";
+}
+
+async function createAnnouncement(text){
+
+    const {data,error} =
+        await db.rpc("admin_announce",{
+            p_message:text
+        });
+
+    if(error){
+        alert(error.message);
+        return;
+    }
+
+    alert("Announcement posted.");
+    await loadMessages();
+}
+
+/* =========================================================
+   REALTIME
+========================================================= */
+
+function subscribeRealtime(){
+
+    db.channel("piltae-chat")
+        .on(
+            "postgres_changes",
+            {
+                event:"*",
+                schema:"public",
+                table:"chat_messages"
+            },
+            ()=>{
+                loadMessages();
+            }
+        )
+        .subscribe();
+}
+
+/* =========================================================
+   MEMBERS
+========================================================= */
+
+async function loadMembers(){
+
+    const {data,error} =
+        await db
+        .from("profiles")
+        .select("username,role")
+        .order("username")
+        .limit(100);
+
+    if(error){
+        console.error(error);
+        return;
+    }
+
+    const box =
+        document.getElementById("members");
+
+    box.innerHTML = "";
+
+    data.forEach(user=>{
+
+        box.innerHTML += `
+            <div class="member">
+                <div class="online"></div>
+                <div class="memberName">
+                    ${escapeHtml(user.username || "Player")}
+                    ${roleBadge(user.role)}
+                </div>
+            </div>
+        `;
+    });
+}
+
+/* =========================================================
+   REFRESH
+========================================================= */
+
+async function refreshAll(){
+
+    await loadProfile();
+    await loadBalance();
+    await loadMessages();
+    await loadLeaderboard();
+    await loadEvents();
+    await loadMembers();
+
+    if(isAdmin()){
+        document
+            .getElementById("adminNav")
+            .classList.remove("hidden");
+
+        document
+            .getElementById("createEventButton")
+            .classList.remove("hidden");
+    }
+}
+
+/* =========================================================
+   INIT
+========================================================= */
+
+db.auth.onAuthStateChange(
+    async(event,session)=>{
+
+        if(session && !currentUser){
+            await startApp();
+        }
+    }
+);
+
+(async()=>{
+
+    const {
+        data:{session}
+    } = await db.auth.getSession();
+
+    if(session){
+        await startApp();
+    }
+
 })();
+
 </script>
+
 </body>
 </html>
+```
